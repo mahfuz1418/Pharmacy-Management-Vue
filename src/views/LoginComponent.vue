@@ -2,7 +2,7 @@
   <div class="d-flex justify-content-center align-items-center vh-100 bg-light">
     <div class="card shadow p-4" style="width: 400px;">
 
-      <div class="box" :class="{'box-right' : boxRight}"></div>
+      <!-- <div class="box" :class="{'box-right' : boxRight}"></div>
       <div class="d-flex mt-4">
         <button class="btn btn-sm btn-danger me-2" @click="boxRight = true">Move Right</button>
         <button class="btn btn-sm btn-danger"  @click="boxRight = false">Move Left</button>
@@ -12,7 +12,7 @@
       <Transition name="showhide">
         <div class="box1"  v-if="showBox"></div>
       </Transition>
-      <button class="btn btn-sm btn-success mt-3" @click="showBox = !showBox">Show / Hide</button>
+      <button class="btn btn-sm btn-success mt-3" @click="showBox = !showBox">Show / Hide</button> -->
 
       <h2 class="mb-4 text-center">Login</h2>
       <form @submit.prevent="handleForm">
@@ -30,12 +30,17 @@
 
 
         <!-- Submit Button -->
-        <button type="submit" class="btn btn-sm btn-danger w-100">Submit</button>
+        <!-- <p v-if="login == true">Logging...</p>
+        <button type="submit" class="btn btn-sm btn-danger w-100" v-if="login == false">Submit</button> -->
+        <TheButton :block="true" :loading="login">Button</TheButton>
       </form>
     </div>
   </div>
 </template>
 <script>
+import axios from "axios";
+import TheButton from "../components/TheButton.vue";
+
 export default {
     data() {
         return {
@@ -44,11 +49,16 @@ export default {
                 password: "",
               },
             boxRight: false,
-            showBox: false
+            showBox: false,
+            login: false
         }
+    },
+    components:{
+      TheButton
     },
     methods: {
         handleForm(){
+          
             if (!this.formData.email) {
                 this.$eventBus.emit('toast', {
                    type: 'Error' ,
@@ -68,6 +78,38 @@ export default {
                 this.$refs.password.focus();
                 return;
             }
+
+            this.login = true
+
+            axios.post("http://127.0.0.1:8000/api/login", this.formData)
+              .then((response) => {     
+                console.log(response.data);
+                           
+                this.$eventBus.emit('toast', {
+                   type: 'Success' ,
+                   message: response.data.message
+                })
+
+                localStorage.setItem("accesstoken", response.data.token);
+                this.$router.push("/dashboard");
+
+              })
+              .catch((error) => {
+                  let errorMessage = "Something went wrong!";
+                  if (error.response) {
+                    errorMessage =  error.response.data.error
+                  }
+                  
+                  this.$eventBus.emit('toast', {
+                    type: 'Error' ,
+                    message: errorMessage
+                  })
+              })
+              .finally(() => {
+                this.login = false
+              });
+
+            
         }
     },
 }

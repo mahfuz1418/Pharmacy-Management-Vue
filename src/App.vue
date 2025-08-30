@@ -1,13 +1,15 @@
 <template>
   <div>
-    <LoginComponent></LoginComponent>
-    <div class="toasts">
-      <ToastComponent  v-for="(toast, i) in toasts" :key="i" :toastType="toast.type" :message="toast.message"></ToastComponent>
-    </div>
+    <!-- <LoginComponent></LoginComponent> -->
+    <RouterView></RouterView>
+      <TransitionGroup name="list" tag="div" class="toasts">
+        <ToastComponent  v-for="(toast, i) in toasts" :key="i" :toastType="toast.type" :message="toast.message"></ToastComponent>
+      </TransitionGroup>
+
   </div>
 </template>
 <script>
-import LoginComponent from './components/LoginComponent.vue';
+import LoginComponent from './views/LoginComponent.vue';
 import ToastComponent from './components/ToastComponent.vue';
 export default {
   data() {
@@ -38,7 +40,7 @@ export default {
     }
   },
   components: {
-    LoginComponent,
+    // LoginComponent,
     ToastComponent
   }
 }
@@ -53,5 +55,15 @@ export default {
     flex-direction: column;
     align-items: flex-end;
     overflow-x: hidden;
+  }
+
+  .list-enter-active,
+  .list-leave-active {
+    transition: all 0.25s ease;
+  }
+  .list-enter-from,
+  .list-leave-to {
+    opacity: 0;
+    transform: translateX(100px);
   }
 </style>
