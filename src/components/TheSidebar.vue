@@ -1,30 +1,30 @@
 <template>
-    <div class="sidebar">
-        <div class="sidebar__top">
-            <h5 class="brand">Pharmacy Management</h5>
-        </div>
-        <div class="sidebar__bottom">
-            <div class="sidebar__nav">
-                <a href="/dashboard/overview">Overview</a>
-                <a href="/dashboard/overview">Drugs</a>
-                <a href="/dashboard/overview">Vendors</a>
-                <a href="/dashboard/overview">Selling History</a>
-                <a href="/dashboard/overview">Setting</a>
-            </div>
-        </div>
+  <div class="sidebar">
+    <div class="sidebar__top">
+      <h5 class="brand">Pharmacy Management</h5>
     </div>
+    <div class="sidebar__bottom">
+      <div class="sidebar__nav">
+        <router-link to="/dashboard/overview">Overview</router-link>
+        <router-link to="/dashboard/drugs">Drugs</router-link>
+        <router-link to="/dashboard/vendors">Vendors</router-link>
+        <router-link to="/dashboard/selling-history"
+          >Selling History</router-link
+        >
+        <router-link to="/dashboard/settings">Settings</router-link>
+      </div>
+    </div>
+  </div>
 </template>
 <script>
-export default {
-    
-}
+export default {};
 </script>
-<style >
+<style>
 .sidebar {
   flex: 1;
   display: flex;
   flex-direction: column;
-  background-color: var(--brand-color);
+  background-color: rgb(48, 15, 15);
   color: #f0faf5;
 }
 
@@ -44,9 +44,9 @@ export default {
   display: block;
   padding: 9px 22px;
   text-decoration: none;
-  border-bottom: 1px solid var(--brand-color);
+  border-bottom: 1px solid rgb(48, 15, 15);
   color: #a7a097;
-  border-left: 4px solid var(--brand-color);
+  border-left: 4px solid rgb(48, 15, 15);
   text-shadow: none;
 }
 

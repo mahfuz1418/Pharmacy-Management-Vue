@@ -4,19 +4,25 @@
               <TheSidebar></TheSidebar>
             </div>
             <div class="dashboard__right">
-                <div class="dashboard__top"></div>
-                <div class="dashboard__main"></div>
+                <div class="dashboard__top">
+                  <TheHeader></TheHeader>
+                </div>
+                <div class="dashboard__main">
+                  <RouterView></RouterView>
+                </div>
                 
             </div>
         </div>
     </template>
 
 <script>
+import TheHeader from '../components/TheHeader.vue';
 import TheSidebar from '../components/TheSidebar.vue';
 
   export default {
       components: {
-        TheSidebar
+        TheSidebar,
+        TheHeader
       }
   }
 </script>
