@@ -1,30 +1,33 @@
-    <template>
-        <div class="dashboard">
-            <div class="dashboard__left">
-              <TheSidebar></TheSidebar>
-            </div>
-            <div class="dashboard__right">
-                <div class="dashboard__top">
-                  <TheHeader></TheHeader>
-                </div>
-                <div class="dashboard__main">
-                  <RouterView></RouterView>
-                </div>
-                
-            </div>
-        </div>
-    </template>
+<template>
+  <div class="dashboard">
+    <div class="dashboard__left">
+      <TheSidebar></TheSidebar>
+    </div>
+    <div class="dashboard__right">
+      <div class="dashboard__top">
+        <TheHeader></TheHeader>
+      </div>
+      <div class="dashboard__main">
+        <RouterView></RouterView>
+      </div>
+    </div>
+  </div>
+</template>
 
 <script>
-import TheHeader from '../components/TheHeader.vue';
-import TheSidebar from '../components/TheSidebar.vue';
+import TheHeader from "../components/TheHeader.vue";
+import TheSidebar from "../components/TheSidebar.vue";
+import { setPrivateHeader } from "../service/axiosInstance";
 
-  export default {
-      components: {
-        TheSidebar,
-        TheHeader
-      }
-  }
+export default {
+  components: {
+    TheSidebar,
+    TheHeader,
+  },
+  mounted() {
+    setPrivateHeader();
+  },
+};
 </script>
 <style>
 .dashboard {

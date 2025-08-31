@@ -95,14 +95,18 @@
       <strong>{{ selectedValues.name }}</strong>
     </p>
 
-    <TheButton :loading="delating">Yes</TheButton>
-    <TheButton class="mx-3" color="gray">No</TheButton>
+    <TheButton :loading="delating" @click="deleteVendor">Yes</TheButton>
+    <TheButton class="mx-3" color="gray" @click="deleteModal = false"
+      >No</TheButton
+    >
   </TheModal>
 </template>
 <script>
 import axios from "axios";
 import TheButton from "../../components/TheButton.vue";
 import TheModal from "../../components/TheModal.vue";
+import { showErrorMessage, showSuccessMessage } from "../../utils/functions";
+import privateServices from "../../service/privateServices";
 
 export default {
   data() {
@@ -127,7 +131,7 @@ export default {
     TheModal,
   },
   mounted() {
-    this.getAllVendors();
+    setTimeout(this.getAllVendors, 100);
   },
   methods: {
     resetForm() {
@@ -135,47 +139,30 @@ export default {
     },
     getAllVendors() {
       this.gettingVendors = true;
-      axios
-        .get("http://127.0.0.1:8000/api/vendors", {
-          headers: {
-            Authorization: localStorage.getItem("accesstoken"),
-          },
-        })
+      privateServices
+        .getVendors()
         .then((response) => {
           this.vendors = response.data.data;
         })
-        .catch((error) => {})
+        .catch((error) => {
+          showErrorMessage(error);
+        })
         .finally(() => {
           this.gettingVendors = false;
         });
     },
     addNewVendor() {
       this.adding = true;
-      axios
-        .post("http://127.0.0.1:8000/api/vendors", this.newVendor, {
-          headers: {
-            Authorization: localStorage.getItem("accesstoken"),
-          },
-        })
+      privateServices
+        .addVendors(this.newVendor)
         .then((response) => {
-          this.$eventBus.emit("toast", {
-            type: "Success",
-            message: response.data.message,
-          });
+          showSuccessMessage(response);
           this.resetForm();
           this.addModal = false;
           this.getAllVendors();
         })
         .catch((error) => {
-          let errorMessage = "Something went wrong!";
-          if (error.response) {
-            errorMessage = error.response.data.error;
-          }
-
-          this.$eventBus.emit("toast", {
-            type: "Error",
-            message: errorMessage,
-          });
+          showErrorMessage(error);
         })
         .finally(() => {
           this.adding = false;
@@ -183,37 +170,35 @@ export default {
     },
     editVendor() {
       this.updating = true;
-      axios
-        .put(
-          "http://127.0.0.1:8000/api/vendors/" + this.selectedValues.id,
-          this.selectedValues,
-          {
-            headers: {
-              Authorization: localStorage.getItem("accesstoken"),
-            },
-          }
-        )
+      privateServices
+        .editVendors(this.selectedValues)
         .then((response) => {
-          this.$eventBus.emit("toast", {
-            type: "Success",
-            message: response.data.message,
-          });
+          showSuccessMessage(response);
           this.editModal = false;
           this.getAllVendors();
         })
         .catch((error) => {
-          let errorMessage = "Something went wrong!";
-          if (error.response) {
-            errorMessage = error.response.data.error;
-          }
-
-          this.$eventBus.emit("toast", {
-            type: "Error",
-            message: errorMessage,
-          });
+          showErrorMessage(error);
         })
         .finally(() => {
           this.updating = false;
+        });
+    },
+
+    deleteVendor() {
+      this.delating = true;
+      privateServices
+        .deleteVendors(this.selectedValues.id)
+        .then((response) => {
+          showSuccessMessage(response);
+          this.deleteModal = false;
+          this.getAllVendors();
+        })
+        .catch((error) => {
+          showErrorMessage(error);
+        })
+        .finally(() => {
+          this.delating = false;
         });
     },
   },
