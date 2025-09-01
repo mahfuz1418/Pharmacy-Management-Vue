@@ -51,7 +51,7 @@ export default {
 }
 
 .the-modal__container {
-  width: 444px;
+  width: 500x;
   min-height: 222px;
   background-color: rgb(235, 235, 235);
   border-radius: 9px;

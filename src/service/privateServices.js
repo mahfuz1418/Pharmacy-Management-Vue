@@ -13,4 +13,16 @@ export default {
   deleteVendors(id) {
     return axiosPrivate.delete("/vendors/" + id);
   },
+  getAllDrags() {
+    return axiosPrivate.get("/drags");
+  },
+  addNewDrag(payload) {
+    return axiosPrivate.post("/drags", payload);
+  },
+  editDrugs(payload) {
+    return axiosPrivate.put("/drags/" + payload.id, payload);
+  },
+  deleteDrugs(id) {
+    return axiosPrivate.delete("/drags/" + id);
+  },
 };
