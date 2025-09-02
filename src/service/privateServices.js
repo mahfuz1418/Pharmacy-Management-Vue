@@ -25,4 +25,8 @@ export default {
   deleteDrugs(id) {
     return axiosPrivate.delete("/drags/" + id);
   },
+
+  searchDrugs(value) {
+    return axiosPrivate.post("/drags/search", { searchString: value });
+  },
 };

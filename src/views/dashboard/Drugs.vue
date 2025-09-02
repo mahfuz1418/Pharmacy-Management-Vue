@@ -290,7 +290,14 @@ export default {
   },
   methods: {
     resetForm() {
-      this.newVendor = { name: "", description: "" };
+      this.newDrug = {
+        name: "",
+        type: "",
+        weight: "",
+        price: "",
+        quantity: "",
+        vendor_id: "",
+      };
     },
     getAllDrags() {
       this.gettingDrags = true;

@@ -1,18 +1,164 @@
 <template>
-    <div class="the-header">
-        <div>
-            <input type="text" class="the-header__search" placeholder="Search...">
-        </div>
-
-        <div class="avatar-wrapper">
-            <div class="avatar">T</div>
-        </div>
+  <div class="the-header">
+    <div class="p-relative">
+      <input
+        type="text"
+        class="the-header__search"
+        placeholder="Search..."
+        @focus="searchFocused = true"
+        @blur="handleBlur"
+        v-model="searchString"
+      />
     </div>
+
+    <div class="search-results" v-show="searchFocused">
+      <table class="w-100">
+        <tr
+          class="result-item"
+          v-for="drug in drugs"
+          :key="drug.name"
+          @click="handleClick(drug)"
+        >
+          <!-- @click="handleClick(drug)" -->
+          <td>{{ drug.name }}</td>
+          <td>{{ drug.weight }}mg</td>
+          <td>{{ drug.vendor.name }}</td>
+          <td>{{ drug.quantity }}</td>
+        </tr>
+      </table>
+    </div>
+
+    <div class="avatar-wrapper">
+      <div class="avatar" @click="showAvatar = !showAvatar">T</div>
+      <div class="avatar__overflow" v-show="showAvatar">
+        <div class="avatar__overflow-title">test@gmail.com</div>
+        <router-link to="/dashboard/vendors">
+          <div
+            class="avatar__overflow-link mt-2"
+            @click="
+              showAvatar = false;
+              $router.push('/dashboard/vendors');
+            "
+          >
+            Settings
+          </div>
+        </router-link>
+        <router-link to="#" @click="logout">
+          <div class="avatar__overflow-link mb-2">Logout</div>
+        </router-link>
+      </div>
+    </div>
+
+    <TheModal v-model:modalValue="detailsModal" heading="Drug Details">
+      <div>
+        <table class="drug-details">
+          <tr>
+            <th>Name:</th>
+            <td>{{ selectedDrug.name }}</td>
+          </tr>
+          <tr>
+            <th>Type:</th>
+            <td>{{ selectedDrug.type }}</td>
+          </tr>
+
+          <tr>
+            <th>Weight:</th>
+            <td>{{ selectedDrug.weight }}</td>
+          </tr>
+
+          <tr>
+            <th>Vendor:</th>
+            <td>{{ selectedDrug?.vendor?.name || "No vendor" }}</td>
+          </tr>
+
+          <tr>
+            <th>Price:</th>
+            <td>{{ selectedDrug.price }}</td>
+          </tr>
+
+          <tr>
+            <th>Available:</th>
+            <td>{{ selectedDrug.quantity }}</td>
+          </tr>
+
+          <tr>
+            <th>Quantity:</th>
+            <td><input type="number" v-model="quantity" ref="qtyInput" /></td>
+          </tr>
+        </table>
+
+        <TheButton @click="addToCart" class="w-100 mt-4">Add to cart</TheButton>
+      </div>
+    </TheModal>
+  </div>
 </template>
 <script>
+import privateServices from "../service/privateServices";
+import TheModal from "../components/TheModal.vue";
+import TheButton from "../components/TheButton.vue";
+
 export default {
-    
-}
+  data() {
+    return {
+      showAvatar: false,
+      searchFocused: false,
+      searchString: "",
+      drugs: [],
+      lastSearchTime: 0,
+      selectedDrug: {},
+      detailsModal: false,
+      quantity: 0,
+    };
+  },
+  components: {
+    TheModal,
+    TheButton,
+  },
+  methods: {
+    logout() {
+      localStorage.removeItem("accesstoken");
+      location.href = "/";
+    },
+    searchDrug(value, lastSearchTime) {
+      privateServices
+        .searchDrugs(value)
+        .then((response) => {
+          if (lastSearchTime === this.lastSearchTime) {
+            this.drugs = response.data.data;
+          }
+        })
+        .catch((error) => {
+          showErrorMessage(error);
+        })
+        .finally(() => {
+          this.adding = false;
+        });
+    },
+    handleClick(drug) {
+      this.selectedDrug = drug;
+      this.detailsModal = true;
+    },
+    handleBlur() {
+      setTimeout(() => {
+        this.searchFocused = false;
+      }, 100);
+    },
+    addToCart() {
+      console.log(this.selectedDrug);
+    },
+  },
+
+  watch: {
+    searchString(value) {
+      if (value) {
+        this.lastSearchTime = Date.now();
+        this.searchDrug(value, this.lastSearchTime);
+      } else {
+        this.drugs = [];
+      }
+    },
+  },
+};
 </script>
 <style>
 .the-header {
@@ -86,7 +232,7 @@ export default {
 .search-results {
   background-color: #fff;
   position: absolute;
-  left: 0;
+
   top: 46px;
   min-height: 111px;
   max-height: 366px;

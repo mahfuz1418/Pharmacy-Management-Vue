@@ -24,6 +24,12 @@ export default {
     TheSidebar,
     TheHeader,
   },
+  created() {
+    const accessToken = localStorage.getItem("accesstoken");
+    if (!accessToken) {
+      location.href = "/";
+    }
+  },
   mounted() {
     setPrivateHeader();
   },
