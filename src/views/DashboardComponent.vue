@@ -11,6 +11,18 @@
         <RouterView></RouterView>
       </div>
     </div>
+    <div
+      class="dashboard__cart"
+      :class="{ 'dashboard__cart--opened': cartOpened }"
+    >
+      <div class="the-cart-container">
+        <TheCart @close="cartOpened = false"></TheCart>
+      </div>
+
+      <div class="cart-arrow" @click="cartOpened = !cartOpened">
+        <img src="/img/arrow.png" alt="" />
+      </div>
+    </div>
   </div>
 </template>
 
@@ -18,11 +30,18 @@
 import TheHeader from "../components/TheHeader.vue";
 import TheSidebar from "../components/TheSidebar.vue";
 import { setPrivateHeader } from "../service/axiosInstance";
+import TheCart from "../components/TheCart.vue";
 
 export default {
+  data() {
+    return {
+      cartOpened: false,
+    };
+  },
   components: {
     TheSidebar,
     TheHeader,
+    TheCart,
   },
   created() {
     const accessToken = localStorage.getItem("accesstoken");
