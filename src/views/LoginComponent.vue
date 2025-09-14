@@ -39,6 +39,8 @@ import axios from "axios";
 import TheButton from "../components/TheButton.vue";
 import { showErrorMessage, showSuccessMessage } from "../utils/functions";
 import { setPrivateHeader } from "../service/axiosInstance";
+import { useAuthStore } from "../store/authStore";
+import { mapState, mapActions } from "pinia";
 
 export default {
   data() {
@@ -52,10 +54,20 @@ export default {
       login: false,
     };
   },
+  computed: {
+    ...mapState(useAuthStore,{
+      email: 'email',
+      accessToken: 'accessToken',
+      isLoggedIn: 'isLoggedIn'
+    })
+  },
   components: {
     TheButton,
   },
   methods: {
+    ...mapActions(useAuthStore,{
+      loginUser: 'loginUser'
+    }),
     handleForm() {
       if (!this.formData.email) {
         showErrorMessage("Email Field Is Required");
@@ -77,7 +89,12 @@ export default {
         .post("http://127.0.0.1:8000/api/login", this.formData)
         .then((response) => {
           showSuccessMessage(response);
-
+          // console.log(response.data);
+          
+          this.loginUser({
+            email: response.data.user.email,
+            token: response.data.token,
+          });
           localStorage.setItem("accesstoken", response.data.token);
           setPrivateHeader();
           this.$router.push("/dashboard");
