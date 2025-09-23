@@ -35,7 +35,7 @@ import TheCart from "../components/TheCart.vue";
 export default {
   data() {
     return {
-      cartOpened: false,
+      cartOpened: true,
     };
   },
   components: {

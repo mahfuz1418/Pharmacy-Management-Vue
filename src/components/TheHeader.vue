@@ -93,9 +93,11 @@
   </div>
 </template>
 <script>
+import { mapActions } from "pinia";
+import { useCartStore } from "../store/cartStore";
 import privateServices from "../service/privateServices";
-import TheModal from "../components/TheModal.vue";
-import TheButton from "../components/TheButton.vue";
+import TheModal from "./TheModal.vue";
+import TheButton from "./TheButton.vue"
 
 export default {
   data() {
@@ -115,6 +117,9 @@ export default {
     TheButton,
   },
   methods: {
+    ...mapActions(useCartStore,{
+      addToCartStore : "add"
+    }),
     logout() {
       localStorage.removeItem("accesstoken");
       location.href = "/";
